@@ -1,51 +1,53 @@
 package java.src.main.java.workshop.trivia;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 
 public class TriviaGame {
-    ArrayList<String> players = new ArrayList<>();
-    int[] places = new int[6];
-    int[] purses = new int[6];
-    boolean[] inPenaltyBox = new boolean[6];
+    private static final int NB_CELLS = 12;
+    private static final Category[] CATEGORIES = new Category[]{Category.POP,Category.SCIENCE,Category.SPORTS,Category.ROCK};
 
-    LinkedList<String> popQuestions = new LinkedList<>();
-    LinkedList<String> scienceQuestions = new LinkedList<>();
-    LinkedList<String> sportsQuestions = new LinkedList<String>();
-    LinkedList<String> rockQuestions = new LinkedList<>();
+    private final Map<Integer, Category> categoriesByPosition = new HashMap<>(NB_CELLS);
+    private final Map<Category, List<String>> questionsByCategory = new HashMap<>();
+
+    private final ArrayList<String> players = new ArrayList<>();
+    private final int[] places = new int[6];
+    private final int[] purses = new int[6];
+    private final boolean[] inPenaltyBox = new boolean[6];
 
     int currentPlayer = 0;
     boolean isGettingOutOfPenaltyBox;
 
     public TriviaGame() {
+        for (Category c: CATEGORIES) {
+            questionsByCategory.put(c, new LinkedList<>());
+        }
         for (int i = 0; i < 50; i++) {
-            popQuestions.addLast("Pop Question " + i);
-            scienceQuestions.addLast(("Science Question " + i));
-            sportsQuestions.addLast(("Sports Question " + i));
-            rockQuestions.addLast(createRockQuestion(i));
+            for (Category c:CATEGORIES) {
+                questionsByCategory.get(c).add(c.toString() + " Question " + i);
+            }
+        }
+
+        for (int i = 0; i < NB_CELLS; i++) {
+            categoriesByPosition.put(i, CATEGORIES[i % CATEGORIES.length]);
         }
     }
 
-    public String createRockQuestion(int index) {
-        return "Rock Question " + index;
-    }
-
-    public boolean add(String playerName) {
+    public void add(String playerName) {
 
 
         players.add(playerName);
-        places[howManyPlayers()] = 0;
-        purses[howManyPlayers()] = 0;
-        inPenaltyBox[howManyPlayers()] = false;
+        places[players.size()] = 0;
+        purses[players.size()] = 0;
+        inPenaltyBox[players.size()] = false;
 
         announce(playerName + " was added");
         announce("They are player number " + players.size());
-        return true;
+
     }
 
-    public int howManyPlayers() {
-        return players.size();
-    }
+//    public int howManyPlayers() {
+//        return players.size();
+//    }
 
     public void roll(int roll) {
         announce(players.get(currentPlayer) + " is the current player");
@@ -56,12 +58,12 @@ public class TriviaGame {
                 isGettingOutOfPenaltyBox = true;
 
                 announce(players.get(currentPlayer) + " is getting out of the penalty box");
-                places[currentPlayer] = places[currentPlayer] + roll;
-                if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
 
+
+                move(roll);
                 announce(players.get(currentPlayer)
                         + "'s new location is "
-                        + places[currentPlayer]);
+                        + currentPosition());
                 announce("The category is " + currentCategory());
                 askQuestion();
             } else {
@@ -71,42 +73,32 @@ public class TriviaGame {
 
         } else {
 
-            places[currentPlayer] = places[currentPlayer] + roll;
-            if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
+            move(roll);
             announce(players.get(currentPlayer)
                     + "'s new location is "
-                    + places[currentPlayer]);
+                    + currentPosition());
             announce("The category is " + currentCategory());
             askQuestion();
         }
 
     }
 
+    private void move(int roll) {
+        places[currentPlayer] = (currentPosition() + roll) % NB_CELLS;
+    }
+
+    private Integer currentPosition() {
+        return places[currentPlayer];
+    }
+
+    private int nextPlayer(){
+        return (currentPlayer + 1) % players.size();
+    }
+
     private void askQuestion() {
-        if (currentCategory() == "Pop")
-            announce(popQuestions.removeFirst());
-        if (currentCategory() == "Science")
-            announce(scienceQuestions.removeFirst());
-        if (currentCategory() == "Sports")
-            announce(sportsQuestions.removeFirst());
-        if (currentCategory() == "Rock")
-            announce(rockQuestions.removeFirst());
+        announce(questionsByCategory.get(currentCategory()).remove(0));
     }
 
-
-    private String currentCategory() {
-        if (places[currentPlayer] == 0) return "Pop";
-        if (places[currentPlayer] == 4) return "Pop";
-        if (places[currentPlayer] == 8) return "Pop";
-        if (places[currentPlayer] == 1) return "Science";
-        if (places[currentPlayer] == 5) return "Science";
-        if (places[currentPlayer] == 9) return "Science";
-        if (places[currentPlayer] == 2) return "Sports";
-        if (places[currentPlayer] == 6) return "Sports";
-        if (places[currentPlayer] == 10) return "Sports";
-        return "Rock";
-    }
 
     public boolean wasCorrectlyAnswered() {
         if (inPenaltyBox[currentPlayer]) {
@@ -157,8 +149,13 @@ public class TriviaGame {
         return true;
     }
 
+    private Category currentCategory() {
+
+        return categoriesByPosition.get(currentPosition());
+    }
+
     private boolean didPlayerWin() {
-        return !(purses[currentPlayer] == 6);
+        return purses[currentPlayer] != 6;
     }
 
     protected void announce(Object message) {
