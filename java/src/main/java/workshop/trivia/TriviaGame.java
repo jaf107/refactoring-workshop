@@ -7,15 +7,15 @@ import static java.util.Arrays.asList;
 public class TriviaGame {
     private static final int NUM_CELLS = 12;
     private static final int NUM_QUES = 50;
+
     private static final List<Category> CATEGORIES = asList(Category.POP,Category.SCIENCE,Category.SPORTS,Category.ROCK);
-
     private final Map<Integer, Category> categoriesByPosition = new HashMap<>(NUM_CELLS);
-    private final Question questionSet = new Question(NUM_QUES, CATEGORIES);
 
+    private final Question questionSet = new Question(NUM_QUES, CATEGORIES);
     private final Playerlist players = new Playerlist();
 
-    public TriviaGame() {
 
+    public TriviaGame() {
         for (int i = 0; i < NUM_CELLS; i++) {
             categoriesByPosition.put(i, CATEGORIES.get(i % CATEGORIES.size()));
         }
