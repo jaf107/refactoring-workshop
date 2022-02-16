@@ -34,7 +34,7 @@ public class TriviaGame {
         announce("They have rolled a " + roll);
 
         if (currentPlayer.isInPenaltyBox()) {
-            if (roll % 2 != 0) {
+            if (wouldReleaseFromPenaltyBox(roll)) {
                 currentPlayer.exitsPenaltyBox();
                 announce(currentPlayer + " is getting out of the penalty box");
             } else {
@@ -52,6 +52,10 @@ public class TriviaGame {
         announce(currentPlayer + "'s new location is " + currentPlayer.getPosition());
         announce("The category is " + currentCategory);
         announce(questionSet.nextQuestionIsAbout(currentCategory) );
+    }
+
+    private boolean wouldReleaseFromPenaltyBox(int roll) {
+        return roll % 2 != 0;
     }
 
     private int newPosition(int currentPosition, int roll) {
