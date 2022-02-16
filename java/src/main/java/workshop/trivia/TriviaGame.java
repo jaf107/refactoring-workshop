@@ -13,15 +13,6 @@ public class TriviaGame {
     private Player currentPlayer = null;
     private int currentPlayerIndex = 0;
 
-    /*
-    private final ArrayList<String> players = new ArrayList<>();
-    private final int[] places = new int[6];
-    private final int[] purses = new int[6];
-    private final boolean[] inPenaltyBox = new boolean[6];
-
-    int currentPlayer = 0;*/
-//    boolean isGettingOutOfPenaltyBox;
-
     public TriviaGame() {
         for (Category c: CATEGORIES) {
             questionsByCategory.put(c, new LinkedList<>());
