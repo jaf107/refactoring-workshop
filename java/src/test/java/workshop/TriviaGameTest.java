@@ -65,4 +65,8 @@ public class TriviaGameTest {
             return messages;
         }
     }
+
+    public static void main(String[] args) {
+        System.out.println("Trivia Game");
+    }
 }

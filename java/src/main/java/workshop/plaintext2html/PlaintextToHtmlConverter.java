@@ -1,4 +1,4 @@
-package workshop;
+package workshop.plaintext2html;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaintextToHtmlConverter {
-    String source;
+//    String source;
     int i;
     List<String> result;
     List<String> convertedLine;
@@ -24,13 +24,12 @@ public class PlaintextToHtmlConverter {
     }
 
     private String basicHtmlEncode(String source) {
-        this.source = source;
         i = 0;
         result = new ArrayList<>();
         convertedLine = new ArrayList<>();
-        characterToConvert = stashNextCharacterAndAdvanceThePointer();
+        characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
 
-        while (i <= this.source.length()) {
+        while (i <= source.length()) {
             switch (characterToConvert) {
                 case "<":
                     convertedLine.add("&lt;");
@@ -50,7 +49,7 @@ public class PlaintextToHtmlConverter {
 
             if (i >= source.length()) break;
 
-            characterToConvert = stashNextCharacterAndAdvanceThePointer();
+            characterToConvert = stashNextCharacterAndAdvanceThePointer(source );
         }
         addANewLine();
         String finalResult = String.join("<br />", result);
@@ -59,7 +58,7 @@ public class PlaintextToHtmlConverter {
 
     //pick the character from source string
     //and increment the pointer
-    private String stashNextCharacterAndAdvanceThePointer() {
+    private String stashNextCharacterAndAdvanceThePointer(String source) {
         char c = source.charAt(i);
         i += 1;
         return String.valueOf(c);

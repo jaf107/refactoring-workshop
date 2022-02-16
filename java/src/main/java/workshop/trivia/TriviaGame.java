@@ -1,33 +1,23 @@
-package workshop;
+package java.src.main.java.workshop.trivia;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class TriviaGame {
-    ArrayList players = new ArrayList();
+    ArrayList<Player> players;
     int[] places = new int[6];
     int[] purses = new int[6];
     boolean[] inPenaltyBox = new boolean[6];
 
-    LinkedList popQuestions = new LinkedList();
-    LinkedList scienceQuestions = new LinkedList();
-    LinkedList sportsQuestions = new LinkedList();
-    LinkedList rockQuestions = new LinkedList();
+    Question questionSet;
 
     int currentPlayer = 0;
+//    Player currentPlayer;
     boolean isGettingOutOfPenaltyBox;
 
     public TriviaGame() {
-        for (int i = 0; i < 50; i++) {
-            popQuestions.addLast("Pop Question " + i);
-            scienceQuestions.addLast(("Science Question " + i));
-            sportsQuestions.addLast(("Sports Question " + i));
-            rockQuestions.addLast(createRockQuestion(i));
-        }
-    }
-
-    public String createRockQuestion(int index) {
-        return "Rock Question " + index;
+        questionSet = new Question();
+        players = new ArrayList();
     }
 
     public boolean isPlayable() {
@@ -35,16 +25,17 @@ public class TriviaGame {
     }
 
     public boolean add(String playerName) {
-
-
-        players.add(playerName);
-        places[howManyPlayers()] = 0;
-        purses[howManyPlayers()] = 0;
-        inPenaltyBox[howManyPlayers()] = false;
-
+        addPlayerToList(playerName);
         announce(playerName + " was added");
         announce("They are player number " + players.size());
         return true;
+    }
+
+    private void addPlayerToList(String playerName) {
+        players.add(new Player(playerName, howManyPlayers()));
+        places[howManyPlayers()] = 0;
+        purses[howManyPlayers()] = 0;
+        inPenaltyBox[howManyPlayers()] = false;
     }
 
     public int howManyPlayers() {
@@ -52,33 +43,39 @@ public class TriviaGame {
     }
 
     public void roll(int roll) {
-        announce(players.get(currentPlayer) + " is the current player");
+        Player curPlayer = players.get(currentPlayer);
+        announce(curPlayer.getName()+ " is the current player");
         announce("They have rolled a " + roll);
 
-        if (inPenaltyBox[currentPlayer]) {
+        if (curPlayer.getPenaltyBox()) {
             if (roll % 2 != 0) {
                 isGettingOutOfPenaltyBox = true;
 
-                announce(players.get(currentPlayer) + " is getting out of the penalty box");
-                places[currentPlayer] = places[currentPlayer] + roll;
-                if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
+                announce(players.get(currentPlayer)  + " is getting out of the penalty box");
 
-                announce(players.get(currentPlayer)
+                curPlayer.setPlace(curPlayer.getPlace() + roll);
+                if(curPlayer.getPlace() > 11)
+                {
+                    curPlayer.setPlace(curPlayer.getPlace() - 12);
+                }
+                announce(curPlayer.getName()
                         + "'s new location is "
                         + places[currentPlayer]);
                 announce("The category is " + currentCategory());
                 askQuestion();
             } else {
-                announce(players.get(currentPlayer) + " is not getting out of the penalty box");
+                announce(curPlayer.getName() + " is not getting out of the penalty box");
                 isGettingOutOfPenaltyBox = false;
             }
 
         } else {
 
-            places[currentPlayer] = places[currentPlayer] + roll;
-            if (places[currentPlayer] > 11) places[currentPlayer] = places[currentPlayer] - 12;
-
-            announce(players.get(currentPlayer)
+            curPlayer.setPlace(curPlayer.getPlace() + roll);
+            if(curPlayer.getPlace() > 11)
+            {
+                curPlayer.setPlace(curPlayer.getPlace() - 12);
+            }
+            announce(curPlayer.getName()
                     + "'s new location is "
                     + places[currentPlayer]);
             announce("The category is " + currentCategory());
@@ -89,27 +86,27 @@ public class TriviaGame {
 
     private void askQuestion() {
         if (currentCategory() == "Pop")
-            announce(popQuestions.removeFirst());
+            announce(questionSet.popQuestions.removeFirst());
         if (currentCategory() == "Science")
-            announce(scienceQuestions.removeFirst());
+            announce(questionSet.scienceQuestions.removeFirst());
         if (currentCategory() == "Sports")
-            announce(sportsQuestions.removeFirst());
+            announce(questionSet.sportsQuestions.removeFirst());
         if (currentCategory() == "Rock")
-            announce(rockQuestions.removeFirst());
+            announce(questionSet.rockQuestions.removeFirst());
     }
 
 
     private String currentCategory() {
-        if (places[currentPlayer] == 0) return "Pop";
-        if (places[currentPlayer] == 4) return "Pop";
-        if (places[currentPlayer] == 8) return "Pop";
-        if (places[currentPlayer] == 1) return "Science";
-        if (places[currentPlayer] == 5) return "Science";
-        if (places[currentPlayer] == 9) return "Science";
-        if (places[currentPlayer] == 2) return "Sports";
-        if (places[currentPlayer] == 6) return "Sports";
-        if (places[currentPlayer] == 10) return "Sports";
-        return "Rock";
+        if (places[currentPlayer] == 0 || places[currentPlayer] == 4 || places[currentPlayer] == 8) {
+            return "Pop";
+        }
+        else if (places[currentPlayer] == 1 || places[currentPlayer] == 5 || places[currentPlayer] == 9){
+            return "Science";
+        }else if (places[currentPlayer] == 2 || places[currentPlayer] == 6 || places[currentPlayer] == 10){
+            return "Sports";
+        }else {
+            return "Rock";
+        }
     }
 
     public boolean wasCorrectlyAnswered() {
