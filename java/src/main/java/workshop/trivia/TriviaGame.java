@@ -50,29 +50,28 @@ public class TriviaGame {
 //    }
 
     public void roll(int roll) {
-        announce(players.get(currentPlayer) + " is the current player");
+        String playerName = players.get(currentPlayer);
+        announce(playerName + " is the current player");
         announce("They have rolled a " + roll);
 
         if (inPenaltyBox[currentPlayer]) {
             if (roll % 2 != 0) {
                 inPenaltyBox[currentPlayer] = false;
-                announce(players.get(currentPlayer) + " is getting out of the penalty box");
+                announce(playerName + " is getting out of the penalty box");
 
 
                 move(roll);
-                announce(players.get(currentPlayer) + "'s new location is " + currentPosition());
+                announce(playerName + "'s new location is " + currentPosition());
                 announce("The category is " + currentCategory());
                 askQuestion();
             } else {
-                announce(players.get(currentPlayer) + " is not getting out of the penalty box");
+                announce(playerName + " is not getting out of the penalty box");
                 return;
             }
 
         }
         move(roll);
-        announce(players.get(currentPlayer)
-                + "'s new location is "
-                + currentPosition());
+        announce(playerName + "'s new location is " + currentPosition());
         announce("The category is " + currentCategory());
         askQuestion();
     }
@@ -104,10 +103,10 @@ public class TriviaGame {
             purses[currentPlayer]++;
             announce(players.get(currentPlayer) + " now has " + purses[currentPlayer] + " Gold Coins.");
 
-            boolean winner = didPlayerWin();
+            boolean gameContinues = didPlayerWin();
             currentPlayer = nextPlayer();
 
-            return winner;
+            return gameContinues;
         }
     }
 
@@ -126,7 +125,7 @@ public class TriviaGame {
     }
 
     private boolean didPlayerWin() {
-        return purses[currentPlayer] != 6;
+        return purses[currentPlayer] == 6; // true for game continue, false for stop
     }
 
     protected void announce(Object message) {
