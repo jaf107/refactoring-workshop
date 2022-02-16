@@ -9,9 +9,7 @@ public class TriviaGame {
     private final Map<Integer, Category> categoriesByPosition = new HashMap<>(NB_CELLS);
     private final Map<Category, List<String>> questionsByCategory = new HashMap<>();
 
-    private final List<Player> players = new ArrayList<>();
-    private Player currentPlayer = null;
-    private int currentPlayerIndex = 0;
+    private final Playerlist players = new Playerlist();
 
     public TriviaGame() {
         for (Category c: CATEGORIES) {
@@ -29,14 +27,14 @@ public class TriviaGame {
     }
 
     public void add(String playerName) {
-        players.add(new Player(playerName));
+        players.add(playerName);
         announce(playerName + " was added");
         announce("They are player number " + players.size());
-        currentPlayer = players.get(currentPlayerIndex);
     }
 
 
     public void roll(int roll) {
+        Player currentPlayer = players.currentPlayer();
         announce(currentPlayer + " is the current player");
         announce("They have rolled a " + roll);
 
@@ -73,34 +71,28 @@ public class TriviaGame {
         return categoriesByPosition.get(currentPosition);
     }
 
-    private Player nextPlayer(){
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
-        return players.get(currentPlayerIndex);
-    }
 
     public boolean wasCorrectlyAnswered() {
+        Player currentPlayer = players.currentPlayer();
         if (currentPlayer.isInPenaltyBox()) {
-            currentPlayer = nextPlayer();
+            players.nextPlayer();
             return true;
         } else {
             announce("Answer was correct!!!!");
             currentPlayer.reward(1);
-
             announce(currentPlayer + " now has " + currentPlayer.getPurse() + " Gold Coins.");
-
             boolean gameContinues = !currentPlayer.hasWon();
-            currentPlayer = nextPlayer();
-
+            players.nextPlayer();
             return gameContinues;
         }
     }
 
     public boolean wrongAnswer() {
+        Player currentPlayer = players.currentPlayer();
         announce("Question was incorrectly answered");
         announce(currentPlayer + " was sent to the penalty box");
         currentPlayer.entersPenaltyBox();
-
-        currentPlayer = nextPlayer();
+        players.nextPlayer();
         return true;
     }
 

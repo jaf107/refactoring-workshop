@@ -2,23 +2,28 @@ package java.src.main.java.workshop.trivia;
 
 import java.src.main.java.workshop.trivia.Player;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Playerlist {
-    ArrayList<Player> playerlist = new ArrayList<>();
-    Player currentPlayer;
+    private final List<Player> players = new ArrayList<>();
+    private int currentPlayerIndex = 0;
 
-    Playerlist()
-    {
-
+    void add(String playerName){
+        players.add(new Player(playerName));
     }
 
-    public Playerlist(ArrayList<Player> playerlist) {
-        this.playerlist = playerlist;
-        this.currentPlayer = playerlist.get(0);
+    Player currentPlayer(){
+        return players.get(currentPlayerIndex);
     }
 
-    public void addPlayer(Player newPlayer){
-        this.playerlist.add(newPlayer);
+    int size(){
+        return players.size();
     }
+
+    Player nextPlayer(){
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        return players.get(currentPlayerIndex);
+    }
+
 
 }
