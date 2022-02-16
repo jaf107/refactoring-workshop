@@ -54,11 +54,6 @@ public class Player {
 
     @Override
     public String toString() {
-        return "Player{" +
-                "name='" + name + '\'' +
-                ", place=" + place +
-                ", purse=" + purse +
-                ", penaltyBox=" + penaltyBox +
-                '}';
+        return this.getName();
     }
 }

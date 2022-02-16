@@ -1,7 +1,8 @@
-package workshop;
+package java.src.test.java.workshop;
 
 import org.junit.Test;
 
+import java.src.main.java.workshop.trivia.TriviaGame;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

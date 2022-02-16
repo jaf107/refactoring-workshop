@@ -11,4 +11,14 @@ public class Playerlist {
     {
 
     }
+
+    public Playerlist(ArrayList<Player> playerlist) {
+        this.playerlist = playerlist;
+        this.currentPlayer = playerlist.get(0);
+    }
+
+    public void addPlayer(Player newPlayer){
+        this.playerlist.add(newPlayer);
+    }
+
 }
