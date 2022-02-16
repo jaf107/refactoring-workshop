@@ -2,27 +2,22 @@ package java.src.main.java.workshop.trivia;
 
 import java.util.*;
 
-public class TriviaGame {
-    private static final int NB_CELLS = 12;
-    private static final Category[] CATEGORIES = new Category[]{Category.POP,Category.SCIENCE,Category.SPORTS,Category.ROCK};
+import static java.util.Arrays.asList;
 
-    private final Map<Integer, Category> categoriesByPosition = new HashMap<>(NB_CELLS);
-    private final Map<Category, List<String>> questionsByCategory = new HashMap<>();
+public class TriviaGame {
+    private static final int NUM_CELLS = 12;
+    private static final int NUM_QUES = 50;
+    private static final List<Category> CATEGORIES = asList(Category.POP,Category.SCIENCE,Category.SPORTS,Category.ROCK);
+
+    private final Map<Integer, Category> categoriesByPosition = new HashMap<>(NUM_CELLS);
+    private final Question questionSet = new Question(NUM_QUES, CATEGORIES);
 
     private final Playerlist players = new Playerlist();
 
     public TriviaGame() {
-        for (Category c: CATEGORIES) {
-            questionsByCategory.put(c, new LinkedList<>());
-        }
-        for (int i = 0; i < 50; i++) {
-            for (Category c:CATEGORIES) {
-                questionsByCategory.get(c).add(c + " Question " + i);
-            }
-        }
 
-        for (int i = 0; i < NB_CELLS; i++) {
-            categoriesByPosition.put(i, CATEGORIES[i % CATEGORIES.length]);
+        for (int i = 0; i < NUM_CELLS; i++) {
+            categoriesByPosition.put(i, CATEGORIES.get(i % CATEGORIES.size()));
         }
     }
 
@@ -56,16 +51,13 @@ public class TriviaGame {
 
         announce(currentPlayer + "'s new location is " + currentPlayer.getPosition());
         announce("The category is " + currentCategory);
-        announce(nextQuestionIsAbout(currentCategory));
+        announce(questionSet.nextQuestionIsAbout(currentCategory) );
     }
 
     private int newPosition(int currentPosition, int roll) {
-        return (currentPosition + roll) % NB_CELLS;
+        return (currentPosition + roll) % NUM_CELLS;
     }
 
-    private String nextQuestionIsAbout(Category currentCategory) {
-        return questionsByCategory.get(currentCategory).remove(0);
-    }
 
     private Category categoryOf(int currentPosition) {
         return categoriesByPosition.get(currentPosition);
@@ -74,16 +66,16 @@ public class TriviaGame {
 
     public boolean wasCorrectlyAnswered() {
         Player currentPlayer = players.currentPlayer();
+        players.nextPlayer();
         if (currentPlayer.isInPenaltyBox()) {
-            players.nextPlayer();
             return true;
         } else {
             announce("Answer was correct!!!!");
             currentPlayer.reward(1);
             announce(currentPlayer + " now has " + currentPlayer.getPurse() + " Gold Coins.");
-            boolean gameContinues = !currentPlayer.hasWon();
-            players.nextPlayer();
-            return gameContinues;
+
+            return !currentPlayer.hasWon();
+
         }
     }
 

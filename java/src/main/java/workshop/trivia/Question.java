@@ -1,30 +1,24 @@
 package java.src.main.java.workshop.trivia;
 
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 public class Question {
-    LinkedList<String> popQuestions = new LinkedList();
-    LinkedList<String> scienceQuestions = new LinkedList();
-    LinkedList<String> sportsQuestions = new LinkedList();
-    LinkedList<String> rockQuestions = new LinkedList();
+    private final Map<Category, List<String>> questionsByCategory = new HashMap<>();
 
-
-    Map<String, Deque<String >> questionCategory = new HashMap<>();
-
-    public Question() {
-        for (int i = 0; i < 50; i++) {
-            popQuestions.addLast(createQuestion("Pop", i));
-            scienceQuestions.addLast(createQuestion("Science",i));
-            sportsQuestions.addLast(createQuestion("Sports",i));
-            rockQuestions.addLast(createQuestion("Rock",i));
+    public Question(int QuestionCount, List<Category> categories) {
+        for (Category c: categories) {
+            questionsByCategory.put(c, new LinkedList<>());
+        }
+        for (int i = 0; i < QuestionCount; i++) {
+            for (Category c:categories) {
+                questionsByCategory.get(c).add(c + " Question " + i);
+            }
         }
     }
 
-    public String createQuestion(String questionType, int index) {
-        return questionType + " Question " + index;
+
+     String nextQuestionIsAbout(Category currentCategory) {
+        return questionsByCategory.get(currentCategory).remove(0);
     }
 }
 
