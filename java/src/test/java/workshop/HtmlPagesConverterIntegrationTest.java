@@ -1,4 +1,4 @@
-package workshop;
+package java.src.test.java.workshop;
 
 import org.junit.Test;
 

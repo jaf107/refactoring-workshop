@@ -1,4 +1,4 @@
-package workshop.plaintext2html;
+package java.src.main.java.workshop.plaintext2html;
 
 import java.io.IOException;
 import java.nio.file.Files;
