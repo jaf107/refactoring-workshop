@@ -1,55 +1,58 @@
 package java.src.main.java.workshop.trivia;
 
 public class Player {
-    private String name;
-    private int place;
-    private int purse;
-    private boolean penaltyBox;
+    private final String name;
 
-//    int score;
+    private int position = 0;
+    private int purse = 0;
+    private boolean penaltyBox = false;
 
-
-    public Player() {
-        this.place = 0;
-    }
-
-    public Player(String name, int pos) {
+    public Player(String name) {
         this.name = name;
-        this.place = pos;
-        this.purse = 0;
-        this.penaltyBox = false;
     }
 
     public String getName() {
         return name;
     }
 
-    public int getPlace() {
-        return place;
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    void moveTo(int newPosition){
+        setPosition(newPosition);
     }
 
     public int getPurse() {
         return purse;
     }
 
-    public boolean getPenaltyBox() {
-        return penaltyBox;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPlace(int place) {
-        this.place = place;
-    }
-
     public void setPurse(int purse) {
         this.purse = purse;
     }
 
-    public void setPenaltyBox(boolean penaltyBox) {
-        this.penaltyBox = penaltyBox;
+    void reward(int earned){
+         setPurse(getPurse()+ earned);
+    }
+
+    boolean hasWon(){
+        return this.purse >= 6;
+    }
+
+    void entersPenaltyBox(){
+        this.penaltyBox = true;
+    }
+
+    void exitsPenaltyBox(){
+        this.penaltyBox = false;
+    }
+
+    public boolean isInPenaltyBox() {
+        return penaltyBox;
     }
 
     @Override

@@ -9,12 +9,17 @@ public class TriviaGame {
     private final Map<Integer, Category> categoriesByPosition = new HashMap<>(NB_CELLS);
     private final Map<Category, List<String>> questionsByCategory = new HashMap<>();
 
+    private final List<Player> players = new ArrayList<>();
+    private Player currentPlayer = null;
+    private int currentPlayerIndex = 0;
+
+    /*
     private final ArrayList<String> players = new ArrayList<>();
     private final int[] places = new int[6];
     private final int[] purses = new int[6];
     private final boolean[] inPenaltyBox = new boolean[6];
 
-    int currentPlayer = 0;
+    int currentPlayer = 0;*/
 //    boolean isGettingOutOfPenaltyBox;
 
     public TriviaGame() {
@@ -33,42 +38,35 @@ public class TriviaGame {
     }
 
     public void add(String playerName) {
-
-
-        players.add(playerName);
-        places[players.size()] = 0;
-        purses[players.size()] = 0;
-        inPenaltyBox[players.size()] = false;
-
+        players.add(new Player(playerName));
         announce(playerName + " was added");
         announce("They are player number " + players.size());
-
+        currentPlayer = players.get(currentPlayerIndex);
     }
 
 
     public void roll(int roll) {
-        String playerName = players.get(currentPlayer);
-        announce(playerName + " is the current player");
+        announce(currentPlayer + " is the current player");
         announce("They have rolled a " + roll);
 
-        if (inPenaltyBox[currentPlayer]) {
+        if (currentPlayer.isInPenaltyBox()) {
             if (roll % 2 != 0) {
-                inPenaltyBox[currentPlayer] = false;
-                announce(playerName + " is getting out of the penalty box");
+                currentPlayer.exitsPenaltyBox();
+                announce(currentPlayer + " is getting out of the penalty box");
             } else {
-                announce(playerName + " is not getting out of the penalty box");
+                announce(currentPlayer+ " is not getting out of the penalty box");
                 return;
             }
 
         }
 
-        int currentPosition = postionOf(currentPlayer);
-        moveTo(currentPlayer, newPosition(currentPosition, roll));
-        Category currentCategory = categoryOf(currentPosition);
+        currentPlayer.moveTo(newPosition(currentPlayer.getPosition(), roll));
+
+        Category currentCategory = categoryOf(currentPlayer.getPosition());
 
 
-        announce(playerName + "'s new location is " + postionOf(currentPlayer));
-        announce("The category is " + categoryOf(currentPosition));
+        announce(currentPlayer + "'s new location is " + currentPlayer.getPosition());
+        announce("The category is " + currentCategory);
         announce(nextQuestionIsAbout(currentCategory));
     }
 
@@ -76,34 +74,30 @@ public class TriviaGame {
         return (currentPosition + roll) % NB_CELLS;
     }
 
-    private void moveTo(int currentPlayer, int roll) {
-        places[currentPlayer] = (postionOf(currentPlayer) + roll) % NB_CELLS;
-    }
-
-    private Integer postionOf(int currentPlayer) {
-        return places[currentPlayer];
-    }
-
-    private int nextPlayer(){
-        return (currentPlayer + 1) % players.size();
-    }
-
     private String nextQuestionIsAbout(Category currentCategory) {
         return questionsByCategory.get(currentCategory).remove(0);
     }
 
+    private Category categoryOf(int currentPosition) {
+        return categoriesByPosition.get(currentPosition);
+    }
+
+    private Player nextPlayer(){
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        return players.get(currentPlayerIndex);
+    }
 
     public boolean wasCorrectlyAnswered() {
-        if (inPenaltyBox[currentPlayer]) {
+        if (currentPlayer.isInPenaltyBox()) {
             currentPlayer = nextPlayer();
             return true;
         } else {
-
             announce("Answer was correct!!!!");
-            purses[currentPlayer]++;
-            announce(players.get(currentPlayer) + " now has " + purses[currentPlayer] + " Gold Coins.");
+            currentPlayer.reward(1);
 
-            boolean gameContinues = !hasWon(currentPlayer);
+            announce(currentPlayer + " now has " + currentPlayer.getPurse() + " Gold Coins.");
+
+            boolean gameContinues = !currentPlayer.hasWon();
             currentPlayer = nextPlayer();
 
             return gameContinues;
@@ -112,20 +106,11 @@ public class TriviaGame {
 
     public boolean wrongAnswer() {
         announce("Question was incorrectly answered");
-        announce(players.get(currentPlayer) + " was sent to the penalty box");
-        inPenaltyBox[currentPlayer] = true;
+        announce(currentPlayer + " was sent to the penalty box");
+        currentPlayer.entersPenaltyBox();
 
-        currentPlayer++;
-        if (currentPlayer == players.size()) currentPlayer = 0;
+        currentPlayer = nextPlayer();
         return true;
-    }
-
-    private Category categoryOf(int currentPosition) {
-        return categoriesByPosition.get(currentPosition);
-    }
-
-    private boolean hasWon(int currentPlayer) {
-        return purses[currentPlayer] == 6; // true for game continue, false for stop
     }
 
     protected void announce(Object message) {
