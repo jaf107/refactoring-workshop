@@ -45,9 +45,6 @@ public class TriviaGame {
 
     }
 
-//    public int howManyPlayers() {
-//        return players.size();
-//    }
 
     public void roll(int roll) {
         String playerName = players.get(currentPlayer);
@@ -65,27 +62,25 @@ public class TriviaGame {
 
         }
 
+        int currentPosition = postionOf(currentPlayer);
+        moveTo(currentPlayer, newPosition(currentPosition, roll));
+        Category currentCategory = categoryOf(currentPosition);
 
 
-
-
-
-        move(currentPlayer, roll);
-
-        int currentPosition = currentPosition(currentPlayer);
-        Category currentCategory = currentCategory(currentPosition);
-
-
-        announce(playerName + "'s new location is " + currentPosition(currentPlayer));
-        announce("The category is " + currentCategory(currentPosition));
-        askQuestion(currentCategory);
+        announce(playerName + "'s new location is " + postionOf(currentPlayer));
+        announce("The category is " + categoryOf(currentPosition));
+        announce(nextQuestionIsAbout(currentCategory));
     }
 
-    private void move(int currentPlayer, int roll) {
-        places[currentPlayer] = (currentPosition(currentPlayer) + roll) % NB_CELLS;
+    private int newPosition(int currentPosition, int roll) {
+        return (currentPosition + roll) % NB_CELLS;
     }
 
-    private Integer currentPosition(int currentPlayer) {
+    private void moveTo(int currentPlayer, int roll) {
+        places[currentPlayer] = (postionOf(currentPlayer) + roll) % NB_CELLS;
+    }
+
+    private Integer postionOf(int currentPlayer) {
         return places[currentPlayer];
     }
 
@@ -93,8 +88,8 @@ public class TriviaGame {
         return (currentPlayer + 1) % players.size();
     }
 
-    private void askQuestion(Category currentCategory) {
-        announce(questionsByCategory.get(currentCategory).remove(0));
+    private String nextQuestionIsAbout(Category currentCategory) {
+        return questionsByCategory.get(currentCategory).remove(0);
     }
 
 
@@ -108,7 +103,7 @@ public class TriviaGame {
             purses[currentPlayer]++;
             announce(players.get(currentPlayer) + " now has " + purses[currentPlayer] + " Gold Coins.");
 
-            boolean gameContinues = !didPlayerWin(currentPlayer);
+            boolean gameContinues = !hasWon(currentPlayer);
             currentPlayer = nextPlayer();
 
             return gameContinues;
@@ -125,11 +120,11 @@ public class TriviaGame {
         return true;
     }
 
-    private Category currentCategory(int currentPosition) {
+    private Category categoryOf(int currentPosition) {
         return categoriesByPosition.get(currentPosition);
     }
 
-    private boolean didPlayerWin(int currentPlayer) {
+    private boolean hasWon(int currentPlayer) {
         return purses[currentPlayer] == 6; // true for game continue, false for stop
     }
 
