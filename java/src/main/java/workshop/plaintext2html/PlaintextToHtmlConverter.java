@@ -4,19 +4,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 
 public class PlaintextToHtmlConverter {
 //    String source;
     int characterIndex;
-    List<SpecialCharacter> specialCharacters = asList(SpecialCharacter.LESS,SpecialCharacter.GREATER,SpecialCharacter.AMPERSAND,SpecialCharacter.AMPERSAND);
+
+    SpecialCharacters specialCharacters = new SpecialCharacters();
 
     String fileName = "sample.txt";
     List<String> result = new ArrayList<>();
     List<String> convertedLine = new ArrayList<>();
     String characterToConvert;
+
 
     public String toHtml() throws Exception {
         String text = read();
@@ -27,21 +31,15 @@ public class PlaintextToHtmlConverter {
         return new String(Files.readAllBytes(Paths.get(fileName)));
     }
 
+
+
     private String basicHtmlEncode(String source) {
         characterIndex = 0;
         characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
 
-        while (characterIndex <= source.length()) {
-            switch (characterToConvert) {
-                case "<" -> convertedLine.add("&lt;");
-                case ">" -> convertedLine.add("&gt;");
-                case "&" -> convertedLine.add("&amp;");
-                case "\n" -> addANewLine();
-                default -> pushACharacterToTheOutput();
-            }
-
-            if (characterIndex >= source.length())
-                break;
+        while (characterIndex < source.length()) {
+            convertedLine.add(specialCharacters.getSpecialCharacters().get(characterToConvert));
+            pushACharacterToTheOutput();
             characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
         }
         addANewLine();
@@ -54,8 +52,6 @@ public class PlaintextToHtmlConverter {
         return String.valueOf(c);
     }
 
-    //stringfy convertedLine array and push into result
-    //reset convertedLine
     private void addANewLine() {
         String line = String.join("", convertedLine);
         result.add(line);
