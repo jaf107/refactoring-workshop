@@ -20,8 +20,7 @@ public class PlaintextToHtmlConverter {
 
     public String toHtml() throws Exception {
         String text = read();
-        String htmlLines = basicHtmlEncode(text);
-        return htmlLines;
+        return basicHtmlEncode(text);
     }
 
     protected String read() throws IOException {
@@ -46,12 +45,9 @@ public class PlaintextToHtmlConverter {
             characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
         }
         addANewLine();
-        String finalResult = String.join("<br />", result);
-        return finalResult;
+        return String.join("<br />", result);
     }
 
-    //pick the character from source string
-    //and increment the pointer
     private String stashNextCharacterAndAdvanceThePointer(String source) {
         char c = source.charAt(characterIndex);
         this.characterIndex += 1;
