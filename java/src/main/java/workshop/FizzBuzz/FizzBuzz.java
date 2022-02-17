@@ -9,8 +9,9 @@ import java.util.List;
  * For numbers which are factors of both three and five print FizzBuzz instead of the number
  */
 public class FizzBuzz {
-    private List<PatternMatcher> patternMatchers;
-    private PatternMatcher nullObjectPattern;
+    private final List<PatternMatcher> patternMatchers;
+    private final PatternMatcher nullObjectPattern;
+    private String nameOfPattern = "";
 
     public FizzBuzz(List<PatternMatcher> patternMatchers, PatternMatcher nullObjectPattern) {
         super();
@@ -25,8 +26,11 @@ public class FizzBuzz {
             if (patternMatcher.matches(number))
                 strReturn = patternMatcher.generateResponse();
         }
-
+        setNameOfPattern(strReturn);
         return String.valueOf(number);
     }
 
+    public void setNameOfPattern(String nameOfPattern) {
+        this.nameOfPattern = nameOfPattern;
+    }
 }
