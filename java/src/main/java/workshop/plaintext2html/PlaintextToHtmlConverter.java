@@ -6,11 +6,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 public class PlaintextToHtmlConverter {
 //    String source;
     int i;
-    List<String> result;
-    List<String> convertedLine;
+    List<SpecialCharacter> specialCharacters = asList(SpecialCharacter.LESS,SpecialCharacter.GREATER,SpecialCharacter.AMPERSAND,SpecialCharacter.AMPERSAND);
+
+    String fileName = "sample.txt";
+    List<String> result = new ArrayList<>();
+    List<String> convertedLine = new ArrayList<>();
     String characterToConvert;
 
     public String toHtml() throws Exception {
@@ -20,7 +25,7 @@ public class PlaintextToHtmlConverter {
     }
 
     protected String read() throws IOException {
-        return new String(Files.readAllBytes(Paths.get("sample.txt")));
+        return new String(Files.readAllBytes(Paths.get(fileName)));
     }
 
     private String basicHtmlEncode(String source) {
@@ -47,8 +52,8 @@ public class PlaintextToHtmlConverter {
                     pushACharacterToTheOutput();
             }
 
-            if (i >= source.length()) break;
-
+            if (i >= source.length())
+                break;
             characterToConvert = stashNextCharacterAndAdvanceThePointer(source );
         }
         addANewLine();
