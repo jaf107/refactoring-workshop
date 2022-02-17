@@ -27,6 +27,9 @@ public class TriviaGame {
         announce("They are player number " + players.size());
     }
 
+    public void play(){
+        announce("Game is starting");
+    }
 
     public void roll(int roll) {
         Player currentPlayer = players.currentPlayer();
