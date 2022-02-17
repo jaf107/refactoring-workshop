@@ -32,20 +32,11 @@ public class PlaintextToHtmlConverter {
 
         while (i <= this.source.length()) {
             switch (characterToConvert) {
-                case "<":
-                    convertedLine.add("&lt;");
-                    break;
-                case ">":
-                    convertedLine.add("&gt;");
-                    break;
-                case "&":
-                    convertedLine.add("&amp;");
-                    break;
-                case "\n":
-                    addANewLine();
-                    break;
-                default:
-                    pushACharacterToTheOutput();
+                case "<" -> convertedLine.add("&lt;");
+                case ">" -> convertedLine.add("&gt;");
+                case "&" -> convertedLine.add("&amp;");
+                case "\n" -> addANewLine();
+                default -> pushACharacterToTheOutput();
             }
 
             if (i >= source.length()) break;

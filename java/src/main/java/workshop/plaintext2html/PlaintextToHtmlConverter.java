@@ -34,7 +34,10 @@ public class PlaintextToHtmlConverter {
         characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
 
         while (characterIndex < source.length()) {
-            convertedLine.add(specialCharacters.getSpecialCharacters().get(characterToConvert));
+            if(characterToConvert.equals("\n"))
+                addANewLine();
+            else
+                convertedLine.add(specialCharacters.getSpecialCharacters().get(characterToConvert));
             pushACharacterToTheOutput();
             characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
         }
