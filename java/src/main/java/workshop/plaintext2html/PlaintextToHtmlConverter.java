@@ -30,29 +30,20 @@ public class PlaintextToHtmlConverter {
 
     private String basicHtmlEncode(String source) {
         characterIndex = 0;
-        characterToConvert = stashNextCharacterAndAdvanceThePointer(source,characterIndex);
+        characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
 
         while (characterIndex <= source.length()) {
             switch (characterToConvert) {
-                case "<":
-                    convertedLine.add("&lt;");
-                    break;
-                case ">":
-                    convertedLine.add("&gt;");
-                    break;
-                case "&":
-                    convertedLine.add("&amp;");
-                    break;
-                case "\n":
-                    addANewLine();
-                    break;
-                default:
-                    pushACharacterToTheOutput();
+                case "<" -> convertedLine.add("&lt;");
+                case ">" -> convertedLine.add("&gt;");
+                case "&" -> convertedLine.add("&amp;");
+                case "\n" -> addANewLine();
+                default -> pushACharacterToTheOutput();
             }
 
             if (characterIndex >= source.length())
                 break;
-            characterToConvert = stashNextCharacterAndAdvanceThePointer(source, characterIndex);
+            characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
         }
         addANewLine();
         String finalResult = String.join("<br />", result);
@@ -61,7 +52,7 @@ public class PlaintextToHtmlConverter {
 
     //pick the character from source string
     //and increment the pointer
-    private String stashNextCharacterAndAdvanceThePointer(String source, int characterIndex) {
+    private String stashNextCharacterAndAdvanceThePointer(String source) {
         char c = source.charAt(characterIndex);
         this.characterIndex += 1;
         return String.valueOf(c);
