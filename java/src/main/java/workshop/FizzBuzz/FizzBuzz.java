@@ -1,4 +1,4 @@
-package workshop.FizzBuzz;
+package java.src.main.java.workshop.FizzBuzz;
 
 import java.util.List;
 
@@ -11,21 +11,19 @@ import java.util.List;
 public class FizzBuzz {
     private List<PatternMatcher> patternMatchers;
     private PatternMatcher nullObjectPattern;
-    private ResponseGeneratorInterface responseGenerator;
 
-    public FizzBuzz(List<PatternMatcher> patternMatchers, PatternMatcher nullObjectPattern, ResponseGeneratorInterface responseGenerator) {
+    public FizzBuzz(List<PatternMatcher> patternMatchers, PatternMatcher nullObjectPattern) {
         super();
         this.patternMatchers = patternMatchers;
         this.nullObjectPattern = nullObjectPattern;
-        this.responseGenerator = responseGenerator;
     }
 
     public String say(int number) {
-        String strReturn = responseGenerator.generateResponse();
+        String strReturn = nullObjectPattern.generateResponse();
 
         for (PatternMatcher patternMatcher: patternMatchers) {
             if (patternMatcher.matches(number))
-                strReturn = responseGenerator.generateResponse();
+                strReturn = patternMatcher.generateResponse();
         }
 
         return String.valueOf(number);

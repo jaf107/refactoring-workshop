@@ -10,7 +10,7 @@ import static java.util.Arrays.asList;
 
 public class PlaintextToHtmlConverter {
 //    String source;
-    int i;
+    int characterIndex;
     List<SpecialCharacter> specialCharacters = asList(SpecialCharacter.LESS,SpecialCharacter.GREATER,SpecialCharacter.AMPERSAND,SpecialCharacter.AMPERSAND);
 
     String fileName = "sample.txt";
@@ -29,12 +29,10 @@ public class PlaintextToHtmlConverter {
     }
 
     private String basicHtmlEncode(String source) {
-        i = 0;
-        result = new ArrayList<>();
-        convertedLine = new ArrayList<>();
-        characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
+        characterIndex = 0;
+        characterToConvert = stashNextCharacterAndAdvanceThePointer(source,characterIndex);
 
-        while (i <= source.length()) {
+        while (characterIndex <= source.length()) {
             switch (characterToConvert) {
                 case "<":
                     convertedLine.add("&lt;");
@@ -52,9 +50,9 @@ public class PlaintextToHtmlConverter {
                     pushACharacterToTheOutput();
             }
 
-            if (i >= source.length())
+            if (characterIndex >= source.length())
                 break;
-            characterToConvert = stashNextCharacterAndAdvanceThePointer(source );
+            characterToConvert = stashNextCharacterAndAdvanceThePointer(source, characterIndex);
         }
         addANewLine();
         String finalResult = String.join("<br />", result);
@@ -63,9 +61,9 @@ public class PlaintextToHtmlConverter {
 
     //pick the character from source string
     //and increment the pointer
-    private String stashNextCharacterAndAdvanceThePointer(String source) {
-        char c = source.charAt(i);
-        i += 1;
+    private String stashNextCharacterAndAdvanceThePointer(String source, int characterIndex) {
+        char c = source.charAt(characterIndex);
+        this.characterIndex += 1;
         return String.valueOf(c);
     }
 
@@ -74,7 +72,6 @@ public class PlaintextToHtmlConverter {
     private void addANewLine() {
         String line = String.join("", convertedLine);
         result.add(line);
-        convertedLine = new ArrayList<>();
     }
 
     private void pushACharacterToTheOutput() {

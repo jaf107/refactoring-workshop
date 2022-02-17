@@ -1,6 +1,6 @@
-package workshop.FizzBuzz;
+package java.src.main.java.workshop.FizzBuzz;
 
-public class BuzzPatternMatcher implements PatternMatcher, ResponseGeneratorInterface{
+public class BuzzPatternMatcher implements PatternMatcher{
 
     @Override
     public boolean matches(int number) {
@@ -11,4 +11,6 @@ public class BuzzPatternMatcher implements PatternMatcher, ResponseGeneratorInte
     public String generateResponse() {
         return "Buzz";
     }
+
+
 }
