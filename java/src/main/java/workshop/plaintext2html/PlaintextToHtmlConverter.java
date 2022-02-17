@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlaintextToHtmlConverter {
-//    String source;
+    String source;
     int characterIndex;
 
     SpecialCharacters specialCharacters = new SpecialCharacters();
@@ -19,8 +19,8 @@ public class PlaintextToHtmlConverter {
 
 
     public String toHtml() throws Exception {
-        String text = read();
-        return basicHtmlEncode(text);
+        source = read();
+        return basicHtmlEncode();
     }
 
     protected String read() throws IOException {
@@ -29,23 +29,31 @@ public class PlaintextToHtmlConverter {
 
 
 
-    private String basicHtmlEncode(String source) {
+    private String basicHtmlEncode() {
         characterIndex = 0;
-        characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
+        goToNextChar();
 
-        while (characterIndex < source.length()) {
+        while (withinSourceLimit()) {
             if(characterToConvert.equals("\n"))
                 addANewLine();
             else
                 convertedLine.add(specialCharacters.getSpecialCharacters().get(characterToConvert));
             pushACharacterToTheOutput();
-            characterToConvert = stashNextCharacterAndAdvanceThePointer(source);
+            goToNextChar();
         }
         addANewLine();
         return String.join("<br />", result);
     }
 
-    private String stashNextCharacterAndAdvanceThePointer(String source) {
+    private boolean withinSourceLimit() {
+        return characterIndex < source.length();
+    }
+
+    private void goToNextChar() {
+        characterToConvert = stashNextCharacterAndAdvanceThePointer();
+    }
+
+    private String stashNextCharacterAndAdvanceThePointer() {
         char c = source.charAt(characterIndex);
         this.characterIndex += 1;
         return String.valueOf(c);

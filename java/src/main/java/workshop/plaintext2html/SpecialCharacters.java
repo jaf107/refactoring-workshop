@@ -18,6 +18,5 @@ public class SpecialCharacters {
         specialCharacters.put("<","&lt;" );
         specialCharacters.put(">","&gt;" );
         specialCharacters.put("&","&amp;" );
-        specialCharacters.put("\n","\n" );
     }
 }
